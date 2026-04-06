@@ -1,0 +1,2200 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drishti IAS – Marketing Spend Dashboard FY 2025-26</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    /* ========================== RESET & BASE ========================== */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --sidebar-w: 160px;
+      --bg-main: #e8f0fe;
+      --bg-card: #ffffff;
+      --blue-primary: #2563eb;
+      --blue-light: #3b82f6;
+      --blue-softer: #dbeafe;
+      --text-dark: #1e3a5f;
+      --text-mid: #4b6a9b;
+      --text-light: #94a3b8;
+      --border-color: #e2eaf6;
+      --sidebar-bg: linear-gradient(180deg, #1e3a8a 0%, #1d4ed8 60%, #2563eb 100%);
+      --green: #10b981;
+      --red: #ef4444;
+      --purple: #8b5cf6;
+      --teal: #06b6d4;
+      --orange: #f59e0b;
+      --shadow: 0 2px 12px rgba(37, 99, 235, 0.08);
+      --shadow-hover: 0 6px 24px rgba(37, 99, 235, 0.15);
+      --radius: 14px;
+    }
+
+    html,
+    body {
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      background: var(--bg-main);
+      color: var(--text-dark);
+      display: flex;
+      min-height: 100vh;
+      font-size: 13px;
+      overflow-x: hidden;
+    }
+
+    /* ========================== SIDEBAR ========================== */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--sidebar-bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 20px;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 100;
+      box-shadow: 3px 0 20px rgba(30, 58, 138, 0.3);
+    }
+
+    .sidebar-logo {
+      margin-bottom: 20px;
+      padding: 0 10px;
+    }
+
+    #sidebarLogo {
+      width: 130px;
+      height: auto;
+      max-height: 64px;
+      object-fit: contain;
+      border-radius: 8px;
+      filter: brightness(1.08) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+      transition: transform 0.2s ease;
+    }
+
+    #sidebarLogo:hover {
+      transform: scale(1.04);
+    }
+
+    .logo-fallback {
+      width: 130px;
+      height: 56px;
+      background: white;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-label {
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      width: 100%;
+      padding: 0 10px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 10px 12px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      transform: translateX(2px);
+    }
+
+    .nav-item.active {
+      background: rgba(255, 255, 255, 0.22);
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .nav-icon {
+      font-size: 14px;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 0 10px;
+      width: 100%;
+    }
+
+    .new-btn {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1.5px solid rgba(255, 255, 255, 0.4);
+      border-radius: 20px;
+      color: white;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 8px 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .new-btn:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    .customer-data {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    /* Active page badge in filter bar */
+    .active-page-badge {
+      margin-left: auto;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.3px;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    }
+
+    /* Export Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 60, 0.45);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    .modal-box {
+      background: white;
+      border-radius: 20px;
+      padding: 28px 32px;
+      width: 380px;
+      box-shadow: 0 20px 60px rgba(37, 99, 235, 0.2);
+      animation: slideUp 0.25s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .modal-close {
+      background: #f1f5f9;
+      border: none;
+      border-radius: 8px;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      color: var(--text-mid);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .modal-close:hover {
+      background: #fee2e2;
+      color: #ef4444;
+    }
+
+    .modal-sub {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-bottom: 20px;
+    }
+
+    .export-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .export-btn {
+      background: var(--blue-softer);
+      border: 1.5px solid var(--border-color);
+      border-radius: 10px;
+      color: var(--text-dark);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 12px 16px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .export-btn:hover {
+      background: var(--blue-primary);
+      color: white;
+      border-color: var(--blue-primary);
+      transform: translateX(3px);
+    }
+
+    .modal-footer {
+      border-top: 1px solid var(--border-color);
+      padding-top: 12px;
+    }
+
+    @media print {
+
+      .sidebar,
+      .filters-bar,
+      .month-tabs,
+      .modal-overlay {
+        display: none !important;
+      }
+
+      .main-content {
+        margin-left: 0 !important;
+      }
+
+      .chart-card {
+        break-inside: avoid;
+      }
+    }
+
+    /* ========================== MAIN ========================== */
+    .main-content {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 100vh;
+    }
+
+    /* ========================== TOP HEADER ========================== */
+    .top-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding-bottom: 4px;
+    }
+
+    .top-header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-dark);
+      letter-spacing: -0.3px;
+    }
+
+    .page-subtitle {
+      font-size: 11px;
+      color: var(--text-light);
+      margin-top: 2px;
+    }
+
+    .month-tabs {
+      display: flex;
+      gap: 3px;
+      background: white;
+      border-radius: 30px;
+      padding: 4px;
+      box-shadow: var(--shadow);
+      flex-shrink: 0;
+    }
+
+    .month-tab {
+      background: transparent;
+      border: none;
+      border-radius: 20px;
+      color: var(--text-mid);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 5px 9px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .month-tab:hover {
+      background: var(--blue-softer);
+      color: var(--blue-primary);
+    }
+
+    .month-tab.active {
+      background: var(--blue-primary);
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+    }
+
+    /* ========================== FILTERS ========================== */
+    .filters-bar {
+      background: white;
+      border-radius: var(--radius);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--shadow);
+      flex-wrap: wrap;
+    }
+
+    .filter-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-dark);
+      white-space: nowrap;
+    }
+
+    .filter-icon {
+      color: var(--blue-primary);
+    }
+
+    .clear-filters {
+      color: var(--blue-primary);
+      font-size: 11px;
+      text-decoration: none;
+    }
+
+    .clear-filters:hover {
+      text-decoration: underline;
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .filter-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .filter-item label {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .filter-item select {
+      border: 1.2px solid var(--border-color);
+      border-radius: 6px;
+      padding: 4px 22px 4px 8px;
+      font-size: 11px;
+      color: var(--text-dark);
+      background: white;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 7px center;
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    .filter-item select:focus {
+      outline: none;
+      border-color: var(--blue-primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .filter-badge {
+      background: #dbeafe;
+      border: 1px solid var(--blue-primary);
+      color: var(--blue-primary);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    /* ========================== KPI CARDS ========================== */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    .kpi-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 14px 14px 12px;
+      box-shadow: var(--shadow);
+      border: 1.5px solid var(--border-color);
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      border-radius: 2px 2px 0 0;
+    }
+
+    .kpi-c1::before {
+      background: linear-gradient(90deg, #2563eb, #60a5fa);
+    }
+
+    .kpi-c2::before {
+      background: linear-gradient(90deg, #8b5cf6, #c4b5fd);
+    }
+
+    .kpi-c3::before {
+      background: linear-gradient(90deg, #06b6d4, #67e8f9);
+    }
+
+    .kpi-c4::before {
+      background: linear-gradient(90deg, #f59e0b, #fcd34d);
+    }
+
+    .kpi-c5::before {
+      background: linear-gradient(90deg, #10b981, #6ee7b7);
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--blue-primary);
+    }
+
+    .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .kpi-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 4px;
+    }
+
+    .kpi-value {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: -0.5px;
+    }
+
+    .kpi-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .blue-icon {
+      background: #dbeafe;
+    }
+
+    .purple-icon {
+      background: #ede9fe;
+    }
+
+    .teal-icon {
+      background: #ccfbf1;
+    }
+
+    .orange-icon {
+      background: #fef3c7;
+    }
+
+    .blue2-icon {
+      background: #d1fae5;
+    }
+
+    .kpi-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .kpi-sub {
+      font-size: 10px;
+      color: var(--text-mid);
+    }
+
+    .kpi-btn {
+      background: var(--blue-softer);
+      border: none;
+      border-radius: 20px;
+      color: var(--blue-primary);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 9px;
+      cursor: default;
+      font-family: inherit;
+    }
+
+    .green-btn {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .blue-btn {
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    /* ========================== CHARTS ========================== */
+    .charts-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chart-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--shadow);
+      border: 1.5px solid var(--border-color);
+      transition: box-shadow 0.2s ease;
+      overflow: hidden;
+    }
+
+    .chart-card:hover {
+      box-shadow: var(--shadow-hover);
+    }
+
+    .chart-card.wide {
+      flex: 1.6;
+      min-width: 0;
+    }
+
+    .chart-card.medium {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chart-card.small {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chart-card.table-card {
+      flex: 1.2;
+      min-width: 0;
+      padding: 0;
+    }
+
+    .chart-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chart-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .chart-legend {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: var(--text-mid);
+      font-weight: 500;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .chart-container {
+      position: relative;
+    }
+
+    .insight-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .ins-pill {
+      background: var(--blue-softer);
+      color: var(--text-mid);
+      font-size: 10px;
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+
+    .ins-pill strong {
+      color: var(--blue-primary);
+    }
+
+    /* Donut layout */
+    .donut-layout {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      padding-top: 8px;
+    }
+
+    .donut-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      flex: 1;
+    }
+
+    .donut-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 10px;
+      color: var(--text-mid);
+    }
+
+    .dleg {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .dleg-val {
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-left: auto;
+      font-size: 11px;
+    }
+
+    .dleg-pct {
+      font-size: 9px;
+      color: var(--text-light);
+    }
+
+    /* ========================== TABLE ========================== */
+    .table-wrapper {
+      overflow-y: auto;
+      max-height: 260px;
+      border-radius: var(--radius);
+    }
+
+    .table-wrapper::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 2px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+
+    .data-table thead tr {
+      background: var(--blue-primary);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .data-table thead th {
+      color: white;
+      font-weight: 600;
+      padding: 8px 10px;
+      text-align: left;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .data-table tbody tr {
+      border-bottom: 1px solid var(--border-color);
+      transition: background 0.15s;
+    }
+
+    .data-table tbody tr:hover {
+      background: var(--blue-softer);
+    }
+
+    .data-table tbody tr:nth-child(even) {
+      background: #f8faff;
+    }
+
+    .data-table tbody tr:nth-child(even):hover {
+      background: var(--blue-softer);
+    }
+
+    .data-table tbody td {
+      padding: 6px 10px;
+      color: var(--text-dark);
+      white-space: nowrap;
+    }
+
+    .mini-bar-wrap {
+      background: #f1f5f9;
+      border-radius: 3px;
+      height: 5px;
+      width: 100%;
+      margin-top: 3px;
+    }
+
+    .mini-bar-fill {
+      height: 5px;
+      border-radius: 3px;
+    }
+
+    .type-tag {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 8px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .tag-offline {
+      background: #ede9fe;
+      color: #6d28d9;
+    }
+
+    .tag-online {
+      background: #ccfbf1;
+      color: #065f46;
+    }
+
+    .tag-pr {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .tag-tv {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .last-row .chart-card {
+      flex: 1;
+    }
+
+    /* ========================== ANIMATIONS ========================== */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .kpi-card {
+      animation: fadeInUp 0.4s ease both;
+    }
+
+    .kpi-card:nth-child(1) {
+      animation-delay: 0.05s;
+    }
+
+    .kpi-card:nth-child(2) {
+      animation-delay: 0.10s;
+    }
+
+    .kpi-card:nth-child(3) {
+      animation-delay: 0.15s;
+    }
+
+    .kpi-card:nth-child(4) {
+      animation-delay: 0.20s;
+    }
+
+    .kpi-card:nth-child(5) {
+      animation-delay: 0.25s;
+    }
+
+    .chart-card {
+      animation: fadeInUp 0.45s ease 0.15s both;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SIDEBAR -->
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <!-- Uses logo.png if present, else styled fallback -->
+      <img src="data:image/png;base64,/9j/…AiIgIiICIiAiIgIiICIiAiIg/9k=" id="sidebarLogo" alt="Drishti IAS Logo"
+        onerror="this.style.display='none';document.getElementById('logoFallback').style.display='flex'">
+      <div class="logo-fallback" id="logoFallback" style="display:none">
+        <span style="color:red;font-weight:800;font-size:13px;line-height:1.2">दृष्टि</span>
+        <span style="color:#1d4ed8;font-size:9px;font-weight:600">The Vision</span>
+      </div>
+    </div>
+    <p class="nav-label">NAVIGATION</p>
+    <nav class="nav-menu" id="navMenu">
+      <a href="#" class="nav-item" data-page="overview">
+        <span class="nav-icon">⊞</span> Overview
+      </a>
+      <a href="#" class="nav-item active" data-page="spend">
+        <span class="nav-icon">💰</span> Spend Analysis
+      </a>
+      <a href="#" class="nav-item" data-page="channel">
+        <span class="nav-icon">📡</span> Channel Mix
+      </a>
+      <a href="#" class="nav-item" data-page="performance">
+        <span class="nav-icon">📈</span> Performance
+      </a>
+      <a href="#" class="nav-item" data-page="insights">
+        <span class="nav-icon">💡</span> Insights
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <button class="new-btn" id="exportBtn">⬇ Export Report</button>
+      <p class="customer-data">FY 2025–26</p>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- TOP HEADER -->
+    <div class="top-header">
+      <div>
+        <h1 id="pageTitle">Marketing Spend Dashboard</h1>
+        <p class="page-subtitle" id="pageSubtitle">Final Marketing Sheet · FY 2025–26 · Apr 2025 – Mar 2026</p>
+      </div>
+      <div class="month-tabs" id="monthTabs">
+        <button class="month-tab active" data-month="All">All</button>
+        <button class="month-tab" data-month="2025-04">Apr</button>
+        <button class="month-tab" data-month="2025-05">May</button>
+        <button class="month-tab" data-month="2025-06">Jun</button>
+        <button class="month-tab" data-month="2025-07">Jul</button>
+        <button class="month-tab" data-month="2025-08">Aug</button>
+        <button class="month-tab" data-month="2025-09">Sep</button>
+        <button class="month-tab" data-month="2025-10">Oct</button>
+        <button class="month-tab" data-month="2025-11">Nov</button>
+        <button class="month-tab" data-month="2025-12">Dec</button>
+        <button class="month-tab" data-month="2026-01">Jan</button>
+        <button class="month-tab" data-month="2026-02">Feb</button>
+        <button class="month-tab" data-month="2026-03">Mar</button>
+      </div>
+    </div>
+
+    <!-- FILTERS BAR -->
+    <div class="filters-bar">
+      <div class="filter-label">
+        <span class="filter-icon">🔽</span> Filters
+        <a href="#" class="clear-filters" onclick="resetFilters(); return false;">Clear all filters</a>
+      </div>
+      <div class="filter-group">
+        <div class="filter-item">
+          <label>Type</label>
+          <select id="typeFilter" onchange="applyFilter()">
+            <option value="All">All Types</option>
+            <option value="Offline Marketing">Offline Marketing</option>
+            <option value="Online Marketing">Online Marketing</option>
+            <option value="Public Relation">Public Relation</option>
+            <option value="TV/Radio">TV/Radio</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label>Month</label>
+          <select id="monthFilter" onchange="syncMonthTab()">
+            <option value="All">All Months</option>
+            <option value="2025-04">April 2025</option>
+            <option value="2025-05">May 2025</option>
+            <option value="2025-06">June 2025</option>
+            <option value="2025-07">July 2025</option>
+            <option value="2025-08">August 2025</option>
+            <option value="2025-09">September 2025</option>
+            <option value="2025-10">October 2025</option>
+            <option value="2025-11">November 2025</option>
+            <option value="2025-12">December 2025</option>
+            <option value="2026-01">January 2026</option>
+            <option value="2026-02">February 2026</option>
+            <option value="2026-03">March 2026</option>
+          </select>
+        </div>
+      </div>
+      <span class="filter-badge" id="filterBadge" style="display:none"></span>
+      <span class="active-page-badge" id="activePage">Spend Analysis</span>
+    </div>
+
+    <!-- KPI ROW (always visible) -->
+    <div class="kpi-row">
+      <div class="kpi-card kpi-c1">
+        <div class="kpi-header">
+          <div>
+            <p class="kpi-label">Total Spend</p>
+            <h2 class="kpi-value" id="kpi-total">₹16.85 Cr</h2>
+          </div>
+          <div class="kpi-icon blue-icon">💸</div>
+        </div>
+        <div class="kpi-footer">
+          <span class="kpi-sub" id="kpi-sub1">Apr 2025 – Feb 2026</span>
+          <button class="kpi-btn" id="kpi-months-badge">11 months</button>
+        </div>
+      </div>
+      <div class="kpi-card kpi-c2">
+        <div class="kpi-header">
+          <div>
+            <p class="kpi-label">Offline Marketing</p>
+            <h2 class="kpi-value" id="kpi-offline">₹12.31 Cr</h2>
+          </div>
+          <div class="kpi-icon purple-icon">📢</div>
+        </div>
+        <div class="kpi-footer">
+          <span class="kpi-sub" id="kpi-offline-pct">73.0% of total spend</span>
+          <button class="kpi-btn green-btn">Largest</button>
+        </div>
+      </div>
+      <div class="kpi-card kpi-c3">
+        <div class="kpi-header">
+          <div>
+            <p class="kpi-label">Online Marketing</p>
+            <h2 class="kpi-value" id="kpi-online">₹4.07 Cr</h2>
+          </div>
+          <div class="kpi-icon teal-icon">🌐</div>
+        </div>
+        <div class="kpi-footer">
+          <span class="kpi-sub" id="kpi-online-pct">24.1% of total spend</span>
+          <button class="kpi-btn blue-btn">Growing</button>
+        </div>
+      </div>
+      <div class="kpi-card kpi-c4">
+        <div class="kpi-header">
+          <div>
+            <p class="kpi-label">Monthly Average</p>
+            <h2 class="kpi-value" id="kpi-avg">₹1.53 Cr</h2>
+          </div>
+          <div class="kpi-icon orange-icon">📅</div>
+        </div>
+        <div class="kpi-footer">
+          <span class="kpi-sub" id="kpi-avg-sub">Peak: Dec ₹2.02 Cr</span>
+          <button class="kpi-btn" id="kpi-avg-badge">11 months</button>
+        </div>
+      </div>
+      <div class="kpi-card kpi-c5">
+        <div class="kpi-header">
+          <div>
+            <p class="kpi-label">PR &amp; TV/Radio</p>
+            <h2 class="kpi-value" id="kpi-pr">₹47.0L</h2>
+          </div>
+          <div class="kpi-icon blue2-icon">📺</div>
+        </div>
+        <div class="kpi-footer">
+          <span class="kpi-sub" id="kpi-pr-pct">2.8% of total spend</span>
+          <button class="kpi-btn">Tracked</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: OVERVIEW ===== -->
+    <div id="page-overview" class="page-section" style="display:none">
+      <div class="charts-row">
+        <div class="chart-card wide">
+          <div class="chart-card-header">
+            <span class="chart-title">📈 Spend Overview – All Types</span>
+            <div class="insight-pills">
+              <span class="ins-pill">Peak: <strong id="ov-peak">Dec 2025</strong></span>
+              <span class="ins-pill">Total: <strong id="ov-total">₹16.85Cr</strong></span>
+            </div>
+          </div>
+          <div class="chart-container" style="height:200px"><canvas id="ovLineChart"></canvas></div>
+        </div>
+        <div class="chart-card medium">
+          <div class="chart-card-header"><span class="chart-title">🍩 Budget Split</span></div>
+          <div class="donut-layout">
+            <div style="width:130px;height:130px;flex-shrink:0"><canvas id="ovDonutChart"></canvas></div>
+            <div class="donut-legend" id="ovDonutLegend"></div>
+          </div>
+        </div>
+      </div>
+      <div class="charts-row">
+        <div class="chart-card" style="flex:1">
+          <div class="chart-card-header"><span class="chart-title">📊 Category Breakdown</span></div>
+          <div class="chart-container" style="height:180px"><canvas id="ovCatChart"></canvas></div>
+        </div>
+        <div class="chart-card" style="flex:1">
+          <div class="chart-card-header"><span class="chart-title">📅 Monthly Summary</span></div>
+          <div class="table-wrapper" style="max-height:220px">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th>Total Spend</th>
+                  <th>MoM Δ</th>
+                  <th>Trend</th>
+                </tr>
+              </thead>
+              <tbody id="ovMonthlyBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: SPEND ANALYSIS (default) ===== -->
+    <div id="page-spend" class="page-section">
+      <div class="charts-row">
+        <div class="chart-card wide">
+          <div class="chart-card-header">
+            <span class="chart-title">📈 Monthly Spend Trend</span>
+            <div class="insight-pills">
+              <span class="ins-pill">Peak: <strong id="ins-peak">Dec 2025</strong></span>
+              <span class="ins-pill">Low: <strong id="ins-low">Apr 2025</strong></span>
+              <span class="ins-pill">Avg: <strong id="ins-avg">₹1.53Cr</strong></span>
+            </div>
+          </div>
+          <div class="chart-legend">
+            <span class="legend-item"><span class="legend-dot" style="background:#2563eb"></span>Total</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>Offline</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#06b6d4"></span>Online</span>
+          </div>
+          <div class="chart-container" style="height:185px"><canvas id="lineChart"></canvas></div>
+        </div>
+        <div class="chart-card medium">
+          <div class="chart-card-header"><span class="chart-title">🍩 Spend by Type</span></div>
+          <div class="donut-layout">
+            <div style="width:140px;height:140px;flex-shrink:0"><canvas id="donutChart"></canvas></div>
+            <div class="donut-legend" id="donutLegend"></div>
+          </div>
+        </div>
+      </div>
+      <div class="charts-row">
+        <div class="chart-card small">
+          <div class="chart-card-header"><span class="chart-title">📊 Spend by Category</span></div>
+          <div class="chart-container" style="height:200px"><canvas id="catBar"></canvas></div>
+        </div>
+        <div class="chart-card small">
+          <div class="chart-card-header"><span class="chart-title">📦 Monthly Mix (Offline vs Online)</span>
+          </div>
+          <div class="chart-container" style="height:200px"><canvas id="stackedBar"></canvas></div>
+        </div>
+        <div class="chart-card table-card">
+          <div style="padding:14px 14px 8px">
+            <span class="chart-title">🏆 Top Sub-Categories</span>
+            <p style="font-size:10px;color:var(--text-light);margin-top:2px">Ranked by spend for selection
+            </p>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Sub-Category</th>
+                  <th>Type</th>
+                  <th>Spend</th>
+                  <th>Share</th>
+                </tr>
+              </thead>
+              <tbody id="subCatBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: CHANNEL MIX ===== -->
+    <div id="page-channel" class="page-section" style="display:none">
+      <div class="charts-row">
+        <div class="chart-card" style="flex:1.6">
+          <div class="chart-card-header">
+            <span class="chart-title">🌐 Online Marketing Channel Trend</span>
+            <div class="chart-legend" style="margin-bottom:0">
+              <span class="legend-item"><span class="legend-dot" style="background:#2563eb"></span>Google</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#06b6d4"></span>Meta</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span>Retention</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span>Digital
+                Media</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>Influencer</span>
+            </div>
+          </div>
+          <div class="chart-container" style="height:210px"><canvas id="onlineChart"></canvas></div>
+        </div>
+        <div class="chart-card" style="flex:1">
+          <div class="chart-card-header"><span class="chart-title">📦 Type Mix (Stacked)</span></div>
+          <div class="chart-container" style="height:210px"><canvas id="chStackedBar"></canvas></div>
+        </div>
+      </div>
+      <div class="charts-row">
+        <div class="chart-card" style="flex:1">
+          <div class="chart-card-header"><span class="chart-title">🥧 Channel Share</span></div>
+          <div class="donut-layout" style="padding-top:10px">
+            <div style="width:140px;height:140px;flex-shrink:0"><canvas id="chDonut"></canvas></div>
+            <div class="donut-legend" id="chDonutLegend"></div>
+          </div>
+        </div>
+        <div class="chart-card" style="flex:2">
+          <div class="chart-card-header"><span class="chart-title">📊 Online Sub-Category Breakdown</span>
+          </div>
+          <div class="chart-container" style="height:160px"><canvas id="chCatBar"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: PERFORMANCE ===== -->
+    <div id="page-performance" class="page-section" style="display:none">
+      <div class="charts-row">
+        <div class="chart-card" style="flex:1.8">
+          <div class="chart-card-header">
+            <span class="chart-title">📈 Monthly Spend Performance</span>
+            <div class="insight-pills">
+              <span class="ins-pill">Peak: <strong id="perf-peak">Dec 2025</strong></span>
+              <span class="ins-pill">Avg: <strong id="perf-avg">₹1.53Cr</strong></span>
+            </div>
+          </div>
+          <div class="chart-container" style="height:220px"><canvas id="perfLineChart"></canvas></div>
+        </div>
+        <div class="chart-card" style="flex:1">
+          <div class="chart-card-header"><span class="chart-title">🎯 Spend Concentration</span></div>
+          <div class="chart-container" style="height:220px"><canvas id="perfBarChart"></canvas></div>
+        </div>
+      </div>
+      <div class="charts-row last-row">
+        <div class="chart-card" style="flex:1">
+          <div class="chart-card-header"><span class="chart-title">📅 Monthly Performance Table</span></div>
+          <div class="table-wrapper" style="max-height:240px">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th>Total Spend</th>
+                  <th>Offline</th>
+                  <th>Online</th>
+                  <th>MoM Δ</th>
+                  <th>Trend</th>
+                </tr>
+              </thead>
+              <tbody id="perfTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: INSIGHTS ===== -->
+    <div id="page-insights" class="page-section" style="display:none">
+      <div class="charts-row">
+        <div class="chart-card" style="flex:1">
+          <div class="chart-card-header"><span class="chart-title">📊 Category Investment Breakdown</span>
+          </div>
+          <div class="chart-container" style="height:210px"><canvas id="insCatChart"></canvas></div>
+        </div>
+        <div class="chart-card" style="flex:1.4">
+          <div class="chart-card-header"><span class="chart-title">🏆 Top Sub-Categories – Full Ranking</span>
+          </div>
+          <div class="table-wrapper" style="max-height:255px">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Sub-Category</th>
+                  <th>Type</th>
+                  <th>Spend</th>
+                  <th>Share</th>
+                </tr>
+              </thead>
+              <tbody id="insSubCatBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="charts-row last-row">
+        <div class="chart-card" style="flex:1">
+          <div class="chart-card-header"><span class="chart-title">💡 Spend Trend Comparison</span></div>
+          <div class="chart-container" style="height:180px"><canvas id="insRadar"></canvas></div>
+        </div>
+        <div class="chart-card" style="flex:1">
+          <div class="chart-card-header"><span class="chart-title">📈 Type Growth Rate (MoM)</span></div>
+          <div class="chart-container" style="height:180px"><canvas id="insGrowthChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monthly summary (used in Spend page row 3) -->
+    <div id="spend-row3" class="charts-row last-row">
+      <div class="chart-card" style="flex:1">
+        <div class="chart-card-header"><span class="chart-title">📅 Monthly Summary</span></div>
+        <div class="table-wrapper" style="max-height:230px">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th>Total Spend</th>
+                <th>MoM Δ</th>
+                <th>Trend</th>
+              </tr>
+            </thead>
+            <tbody id="monthlyTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- EXPORT MODAL -->
+  <div id="exportModal" class="modal-overlay" style="display:none">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">⬇ Export Report</span>
+        <button class="modal-close" onclick="closeExport()">✕</button>
+      </div>
+      <p class="modal-sub">Choose export format for the current filtered view</p>
+      <div class="export-options">
+        <button class="export-btn" onclick="exportCSV()">📄 Export as CSV</button>
+        <button class="export-btn" onclick="exportJSON()">📦 Export as JSON</button>
+        <button class="export-btn" onclick="window.print()">🖨 Print / Save PDF</button>
+      </div>
+      <div class="modal-footer">
+        <span id="exportInfo" style="font-size:11px;color:var(--text-light)">FY 2025-26 · All 11 months · All
+          Types</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==================== DATA ====================
+    const MONTHS = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
+    const MONTH_KEYS = ['2025-04', '2025-05', '2025-06', '2025-07', '2025-08', '2025-09', '2025-10', '2025-11', '2025-12', '2026-01', '2026-02', '2026-03'];
+    const MONTH_NAMES = ['Apr 2025', 'May 2025', 'Jun 2025', 'Jul 2025', 'Aug 2025', 'Sep 2025', 'Oct 2025', 'Nov 2025', 'Dec 2025', 'Jan 2026', 'Feb 2026', 'Mar 2026'];
+
+    const monthlyByType = {
+      'Offline Marketing': [4466072, 7695636, 11020480, 10288206, 12880964, 10617468, 12347896, 13023927, 15184945, 13241190, 12285646, 11320679],
+      'Online Marketing': [108800, 2049335, 1475155, 3970575, 3265649, 2762545, 5650873, 5937269, 5058664, 4547762, 5877292, 7329683.69],
+      'Public Relation': [700000, 700000, 700000, 700000, 700000, 0, 0, 0, 0, 0, 0, 0],
+      'TV/Radio': [0, 0, 0, 0, 1267215, 0, 0, 0, 0, 0, 0, 0]
+    };
+
+    const catDataFull = [
+      { cat: 'Newspaper & Magazine', type: 'Offline Marketing', monthAmts: [966072, 2400000, 3703480, 4388206, 4480964, 4017468, 4347896, 5723927, 6684945, 5591190, 5299271, 4396079] },
+      { cat: 'Outdoor & Branding', type: 'Offline Marketing', monthAmts: [1200000, 2000000, 3800000, 3500000, 4900000, 4200000, 5000000, 4800000, 5500000, 5150000, 4119107, 6613768] },
+      { cat: 'Google Ads', type: 'Online Marketing', monthAmts: [108800, 588439, 1005682, 1856471, 1654894, 1413319, 1612855, 1427272, 1040100, 852300, 1878800, 2791101.12] },
+      { cat: 'Meta Ads', type: 'Online Marketing', monthAmts: [0, 93737, 119473, 517104, 610755, 744901, 1076700, 1151697, 1712000, 1242700, 1856700, 2028482.57] },
+      { cat: 'Retention Marketing', type: 'Online Marketing', monthAmts: [0, 1217159, 0, 1180000, 0, 0, 1997718, 637000, 910344, 1121787, 1260517, 1286000] },
+      { cat: 'Digital Media Buying', type: 'Online Marketing', monthAmts: [0, 0, 200000, 300000, 850000, 300000, 750000, 920000, 500000, 935000, 500000, 600000] },
+      { cat: 'PR Coverage', type: 'Public Relation', monthAmts: [700000, 700000, 700000, 700000, 700000, 0, 0, 0, 0, 0, 0, 0] },
+      { cat: 'Influencer Marketing', type: 'Online Marketing', monthAmts: [0, 0, 0, 27000, 0, 304325, 93600, 1801300, 771220, 195975, 181275, 424100] },
+      { cat: 'BTL Activation', type: 'Offline Marketing', monthAmts: [300000, 295636, 517000, 400000, 1500000, 400000, 1000000, 2500000, 3000000, 2500000, 866814, 310832] },
+      { cat: 'Radio', type: 'TV/Radio', monthAmts: [0, 0, 0, 0, 1267215, 0, 0, 0, 0, 0, 0, 0] }
+    ];
+
+    const subCatRaw = [
+      { sub: 'Karol Bagh OOH', type: 'Offline Marketing', mi: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], amts: [800000, 1200000, 2500000, 2800000, 3200000, 2800000, 3200000, 3500000, 4000000, 3500000, 3304500, 3245537] },
+      { sub: 'Patrika', type: 'Offline Marketing', mi: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], amts: [700000, 1200000, 1600000, 1800000, 2000000, 1800000, 2000000, 2500000, 3000000, 2494120, 2400000, 1262353] },
+      { sub: 'The Hindu', type: 'Offline Marketing', mi: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], amts: [600000, 1000000, 1400000, 1600000, 1800000, 1600000, 1800000, 2000000, 2500000, 2257366, 2200000, 1038327] },
+      { sub: 'UPSC Google/Meta', type: 'Online Marketing', mi: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], amts: [108800, 682176, 1124000, 2373575, 2265649, 2158220, 2689555, 2578969, 2752100, 2095000, 3147559, 2915777.07] },
+      { sub: 'Lucknow OOH', type: 'Offline Marketing', mi: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], amts: [200000, 500000, 700000, 900000, 1000000, 800000, 900000, 1000000, 1200000, 1120854, 1100000, 846602] },
+      { sub: 'WhatsApp Campaign', type: 'Online Marketing', mi: [1, 2, 3, 6, 7, 8, 9, 10, 11], amts: [1217159, 0, 1180000, 1997718, 637000, 910344, 1121787, 1260517, 1286000] },
+      { sub: 'Jaipur OOH', type: 'Offline Marketing', mi: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], amts: [100000, 300000, 500000, 600000, 700000, 600000, 700000, 800000, 1000000, 841792, 800000, 577200] },
+      { sub: 'Pop Up/Native Ads', type: 'Online Marketing', mi: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11], amts: [200000, 300000, 850000, 300000, 750000, 920000, 500000, 935000, 500000, 600000] },
+      { sub: 'Dainik Jagran', type: 'Offline Marketing', mi: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], amts: [100000, 200000, 300000, 400000, 500000, 400000, 500000, 600000, 700000, 645700, 600000, 652500] },
+      { sub: 'Hindustan Times', type: 'Offline Marketing', mi: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], amts: [100000, 200000, 300000, 400000, 500000, 400000, 500000, 600000, 700000, 643200, 600000, 565500] }
+    ];
+
+    const onlineByChannel = {
+      'Google': [108800, 588439, 1005682, 1856471, 1654894, 1413319, 1612855, 1427272, 1040100, 852300, 1878800, 2791101.12],
+      'Meta': [0, 93737, 119473, 517104, 610755, 744901, 1076700, 1151697, 1712000, 1242700, 1856700, 2028482.57],
+      'Retention Marketing': [0, 1217159, 0, 1180000, 0, 0, 1997718, 637000, 910344, 1121787, 1260517, 1286000],
+      'Digital Media Buying': [0, 0, 200000, 300000, 850000, 300000, 750000, 920000, 500000, 935000, 500000, 600000],
+      'Influencer Marketing': [0, 0, 0, 27000, 0, 304325, 93600, 1801300, 771220, 195975, 181275, 424100]
+    };
+
+    // ==================== HELPERS ====================
+    function fmtL(n) {
+      if (!n || n === 0) return '₹0';
+      if (n >= 10000000) return '₹' + (n / 10000000).toFixed(2) + ' Cr';
+      if (n >= 100000) return '₹' + (n / 100000).toFixed(1) + 'L';
+      return '₹' + n.toLocaleString('en-IN');
+    }
+    function fmtLs(n) {
+      if (!n || n === 0) return '₹0';
+      if (n >= 10000000) return '₹' + (n / 10000000).toFixed(2) + 'Cr';
+      if (n >= 100000) return '₹' + (n / 100000).toFixed(1) + 'L';
+      return '₹' + n.toLocaleString('en-IN');
+    }
+
+    function getSubAmt(row, mIdx) {
+      const pos = row.mi.indexOf(mIdx);
+      return pos >= 0 ? row.amts[pos] : 0;
+    }
+
+    // ==================== CHART DEFAULTS ====================
+    Chart.defaults.font.family = "'Inter','Segoe UI',sans-serif";
+    Chart.defaults.font.size = 10;
+    Chart.defaults.color = '#4b6a9b';
+
+    const gridStyle = { color: '#f1f5f9', lineWidth: 1 };
+    const tooltipStyle = {
+      backgroundColor: 'white',
+      titleColor: '#1e3a5f',
+      bodyColor: '#4b6a9b',
+      borderColor: '#dbeafe',
+      borderWidth: 1,
+      padding: 10,
+      cornerRadius: 8,
+    };
+
+    // ==================== CHART INSTANCES ====================
+    let lineChart, donutChart, catChart, stackedChart, onlineChart = null;
+
+    function initCharts() {
+      // LINE CHART
+      lineChart = new Chart(document.getElementById('lineChart'), {
+        type: 'line',
+        data: { labels: [], datasets: [] },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...tooltipStyle, callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + fmtLs(ctx.raw) } }
+          },
+          scales: {
+            x: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 10 } } },
+            y: { grid: gridStyle, border: { display: false }, ticks: { callback: v => fmtLs(v), font: { size: 9 } } }
+          }
+        }
+      });
+
+      // DONUT CHART
+      donutChart = new Chart(document.getElementById('donutChart'), {
+        type: 'doughnut',
+        data: { labels: [], datasets: [{ data: [], backgroundColor: [], borderWidth: 3, borderColor: '#ffffff', hoverOffset: 6 }] },
+        options: {
+          responsive: true, maintainAspectRatio: false, cutout: '68%',
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...tooltipStyle, callbacks: { label: ctx => ' ' + ctx.label + ': ' + fmtLs(ctx.raw) } }
+          }
+        }
+      });
+
+      // CATEGORY BAR
+      catChart = new Chart(document.getElementById('catBar'), {
+        type: 'bar',
+        data: { labels: [], datasets: [{ data: [], backgroundColor: [], borderRadius: 5, borderSkipped: false }] },
+        options: {
+          indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => ' ' + fmtL(ctx.raw) } } },
+          scales: {
+            x: { grid: gridStyle, border: { display: false }, ticks: { callback: v => fmtLs(v), font: { size: 9 } } },
+            y: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 9 } } }
+          }
+        }
+      });
+
+      // STACKED BAR
+      stackedChart = new Chart(document.getElementById('stackedBar'), {
+        type: 'bar',
+        data: { labels: [], datasets: [] },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 10, font: { size: 9 } } }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + fmtLs(ctx.raw) } } },
+          scales: {
+            x: { grid: { display: false }, stacked: true, border: { display: false }, ticks: { font: { size: 9 } } },
+            y: { grid: gridStyle, stacked: true, border: { display: false }, ticks: { callback: v => fmtLs(v), font: { size: 9 } } }
+          }
+        }
+      });
+
+      // onlineChart is lazily created in renderPageCharts('channel')
+    }
+
+    // ==================== STATE ====================
+    let selType = 'All', selMonth = 'All';
+
+    function getMonthIndices() {
+      if (selMonth === 'All') return MONTHS.map((_, i) => i);
+      const idx = MONTH_KEYS.indexOf(selMonth);
+      return idx >= 0 ? [idx] : [];
+    }
+    function getTypes() {
+      return selType === 'All' ? Object.keys(monthlyByType) : [selType];
+    }
+    function spendAt(mIdx, types) {
+      return types.reduce((s, t) => s + (monthlyByType[t]?.[mIdx] ?? 0), 0);
+    }
+
+    // ==================== APPLY FILTER ====================
+    function applyFilter() {
+      selType = document.getElementById('typeFilter').value;
+      selMonth = document.getElementById('monthFilter').value;
+
+      const mIdxs = getMonthIndices();
+      const types = getTypes();
+      const labels = mIdxs.map(i => MONTHS[i]);
+
+      // Badge
+      const badge = document.getElementById('filterBadge');
+      const isFiltered = selType !== 'All' || selMonth !== 'All';
+      badge.style.display = isFiltered ? 'inline-block' : 'none';
+      badge.textContent = [selType !== 'All' ? selType : '', selMonth !== 'All' ? MONTH_NAMES[MONTH_KEYS.indexOf(selMonth)] : ''].filter(Boolean).join(' · ');
+
+      // ── KPI VALUES ──
+      const totalSpend = mIdxs.reduce((s, i) => s + spendAt(i, types), 0);
+      const offSpend = (selType === 'All' || selType === 'Offline Marketing') ? mIdxs.reduce((s, i) => s + (monthlyByType['Offline Marketing']?.[i] ?? 0), 0) : 0;
+      const onSpend = (selType === 'All' || selType === 'Online Marketing') ? mIdxs.reduce((s, i) => s + (monthlyByType['Online Marketing']?.[i] ?? 0), 0) : 0;
+      const prtvSpend = (selType === 'All') ? mIdxs.reduce((s, i) => s + (monthlyByType['Public Relation']?.[i] ?? 0) + (monthlyByType['TV/Radio']?.[i] ?? 0), 0) : (selType === 'Public Relation' || selType === 'TV/Radio') ? mIdxs.reduce((s, i) => s + (monthlyByType[selType]?.[i] ?? 0), 0) : 0;
+      const avgSpend = mIdxs.length ? totalSpend / mIdxs.length : 0;
+
+      document.getElementById('kpi-total').textContent = fmtL(totalSpend);
+      document.getElementById('kpi-offline').textContent = fmtL(offSpend);
+      document.getElementById('kpi-online').textContent = fmtL(onSpend);
+      document.getElementById('kpi-avg').textContent = fmtL(avgSpend);
+      document.getElementById('kpi-pr').textContent = fmtL(prtvSpend);
+
+      const t = totalSpend || 1;
+      document.getElementById('kpi-offline-pct').textContent = (offSpend / t * 100).toFixed(1) + '% of total spend';
+      document.getElementById('kpi-online-pct').textContent = (onSpend / t * 100).toFixed(1) + '% of total spend';
+      document.getElementById('kpi-pr-pct').textContent = (prtvSpend / t * 100).toFixed(1) + '% of total spend';
+
+      document.getElementById('kpi-sub1').textContent = selMonth !== 'All' ? MONTH_NAMES[MONTH_KEYS.indexOf(selMonth)] : 'Apr 2025 – Feb 2026';
+      document.getElementById('kpi-months-badge').textContent = mIdxs.length + (mIdxs.length === 1 ? ' month' : ' months');
+      document.getElementById('kpi-avg-badge').textContent = mIdxs.length + ' months';
+
+      // Peak sub
+      if (mIdxs.length > 0) {
+        const vals = mIdxs.map(i => spendAt(i, types));
+        const pIdx = vals.indexOf(Math.max(...vals));
+        document.getElementById('kpi-avg-sub').textContent = 'Peak: ' + MONTH_NAMES[mIdxs[pIdx]] + ' ' + fmtLs(vals[pIdx]);
+        // Insights
+        const nonZero = vals.filter(v => v > 0);
+        const lIdx = nonZero.length ? vals.indexOf(Math.min(...nonZero)) : 0;
+        document.getElementById('ins-peak').textContent = mIdxs.length > 1 ? MONTH_NAMES[mIdxs[pIdx]] : fmtLs(vals[pIdx]);
+        document.getElementById('ins-low').textContent = mIdxs.length > 1 && nonZero.length ? MONTH_NAMES[mIdxs[lIdx]] : '—';
+        document.getElementById('ins-avg').textContent = fmtLs(avgSpend);
+      }
+
+      // ── LINE CHART ──
+      const typeColors = { 'Offline Marketing': '#8b5cf6', 'Online Marketing': '#06b6d4', 'Public Relation': '#f59e0b', 'TV/Radio': '#ef4444' };
+      if (selType === 'All') {
+        lineChart.data.labels = labels;
+        lineChart.data.datasets = [
+          { label: 'Total', data: mIdxs.map(i => spendAt(i, Object.keys(monthlyByType))), borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.08)', borderWidth: 2.5, fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: '#2563eb', pointBorderColor: 'white', pointBorderWidth: 2 },
+          { label: 'Offline', data: mIdxs.map(i => monthlyByType['Offline Marketing'][i]), borderColor: '#8b5cf6', backgroundColor: 'transparent', borderWidth: 1.5, borderDash: [5, 4], fill: false, tension: 0.4, pointRadius: 2 },
+          { label: 'Online', data: mIdxs.map(i => monthlyByType['Online Marketing'][i]), borderColor: '#06b6d4', backgroundColor: 'transparent', borderWidth: 1.5, borderDash: [5, 4], fill: false, tension: 0.4, pointRadius: 2 }
+        ];
+      } else {
+        const c = typeColors[selType] || '#2563eb';
+        lineChart.data.labels = labels;
+        lineChart.data.datasets = [
+          { label: selType, data: mIdxs.map(i => monthlyByType[selType]?.[i] ?? 0), borderColor: c, backgroundColor: c + '18', borderWidth: 2.5, fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: c, pointBorderColor: 'white', pointBorderWidth: 2 }
+        ];
+      }
+      lineChart.update();
+
+      // ── DONUT CHART ──
+      const typeKeys = ['Offline Marketing', 'Online Marketing', 'Public Relation', 'TV/Radio'];
+      const typeColorsArr = ['#8b5cf6', '#06b6d4', '#f59e0b', '#ef4444'];
+      const typeAmts = typeKeys.map(tk => (selType === 'All' || selType === tk) ? mIdxs.reduce((s, i) => s + (monthlyByType[tk]?.[i] ?? 0), 0) : 0);
+      const donutTotal = typeAmts.reduce((a, b) => a + b, 0) || 1;
+      const nzTypes = typeKeys.map((tk, i) => ({ tk, amt: typeAmts[i], color: typeColorsArr[i] })).filter(x => x.amt > 0);
+
+      donutChart.data.labels = nzTypes.map(x => x.tk);
+      donutChart.data.datasets[0].data = nzTypes.map(x => x.amt);
+      donutChart.data.datasets[0].backgroundColor = nzTypes.map(x => x.color);
+      donutChart.update();
+
+      const legEl = document.getElementById('donutLegend');
+      legEl.innerHTML = nzTypes.map(x => `
+    <div class="donut-legend-item">
+      <div class="dleg" style="background:${x.color}"></div>
+      <span>${x.tk.replace(' Marketing', '')}</span>
+      <span class="dleg-val">${fmtLs(x.amt)}</span>
+      <span class="dleg-pct">${(x.amt / donutTotal * 100).toFixed(1)}%</span>
+    </div>`).join('') || '<div style="color:#94a3b8;font-size:11px;padding:8px">No data</div>';
+
+      // ── CATEGORY BAR ──
+      const catAmts = catDataFull.map(c => (selType === 'All' || selType === c.type) ? mIdxs.reduce((s, i) => s + (c.monthAmts[i] ?? 0), 0) : 0);
+      const catPairs = catDataFull.map((c, i) => ({ cat: c.cat, amt: catAmts[i] })).filter(x => x.amt > 0).sort((a, b) => b.amt - a.amt).slice(0, 8);
+      const barColors = ['#2563eb', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#3b82f6'];
+      catChart.data.labels = catPairs.map(d => d.cat.length > 18 ? d.cat.slice(0, 16) + '…' : d.cat);
+      catChart.data.datasets[0].data = catPairs.map(d => d.amt);
+      catChart.data.datasets[0].backgroundColor = barColors.slice(0, catPairs.length);
+      catChart.update();
+
+      // ── STACKED BAR ──
+      const stackColors = { 'Offline Marketing': '#8b5cf6', 'Online Marketing': '#06b6d4', 'Public Relation': '#f59e0b', 'TV/Radio': '#ef4444' };
+      const stackTypes = selType === 'All' ? typeKeys : [selType];
+      stackedChart.data.labels = labels;
+      stackedChart.data.datasets = stackTypes.map(tk => ({
+        label: tk.replace(' Marketing', '').replace('Public Relation', 'PR'),
+        data: mIdxs.map(i => monthlyByType[tk]?.[i] ?? 0),
+        backgroundColor: stackColors[tk], borderRadius: 3, stack: 's'
+      }));
+      stackedChart.update();
+
+      // ── ONLINE CHART (channel page only) ──
+      if (onlineChart) {
+        const onlineSection = document.getElementById('onlineChart').closest('.charts-row');
+        if (selType === 'All' || selType === 'Online Marketing') {
+          onlineSection.style.display = '';
+          const onlineColors = ['#2563eb', '#06b6d4', '#10b981', '#f59e0b', '#8b5cf6'];
+          onlineChart.data.labels = labels;
+          onlineChart.data.datasets = Object.entries(onlineByChannel).map(([k, v], i) => ({
+            label: k, data: mIdxs.map(idx => v[idx] ?? 0),
+            borderColor: onlineColors[i], backgroundColor: 'transparent',
+            borderWidth: 2, pointRadius: 3, pointHoverRadius: 5,
+            pointBackgroundColor: onlineColors[i], tension: 0.4
+          }));
+          onlineChart.update();
+        } else {
+          onlineSection.style.display = 'none';
+        }
+      }
+
+      // ── SUB-CAT TABLE ──
+      const subAmts = subCatRaw.map(row => {
+        if (selType !== 'All' && selType !== row.type) return { ...row, amt: 0 };
+        return { ...row, amt: mIdxs.reduce((s, mi) => s + getSubAmt(row, mi), 0) };
+      }).filter(x => x.amt > 0).sort((a, b) => b.amt - a.amt).slice(0, 10);
+      const subMax = subAmts[0]?.amt || 1;
+
+      document.getElementById('subCatBody').innerHTML = subAmts.length === 0
+        ? '<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:16px">No data for selection</td></tr>'
+        : subAmts.map((d, i) => {
+          const pct = (d.amt / totalSpend * 100).toFixed(1);
+          const barW = (d.amt / subMax * 100).toFixed(0);
+          const typeColors2 = { 'Offline Marketing': '#8b5cf6', 'Online Marketing': '#06b6d4', 'Public Relation': '#f59e0b', 'TV/Radio': '#ef4444' };
+          const tagClass = { 'Offline Marketing': 'tag-offline', 'Online Marketing': 'tag-online', 'Public Relation': 'tag-pr', 'TV/Radio': 'tag-tv' }[d.type] || 'tag-offline';
+          const col = typeColors2[d.type] || '#2563eb';
+          return `<tr>
+          <td style="color:#94a3b8;font-weight:600">${i + 1}</td>
+          <td>
+            <div style="font-weight:600">${d.sub}</div>
+            <div class="mini-bar-wrap"><div class="mini-bar-fill" style="width:${barW}%;background:${col}"></div></div>
+          </td>
+          <td><span class="type-tag ${tagClass}">${d.type.replace(' Marketing', '').replace('Public Relation', 'PR')}</span></td>
+          <td style="font-weight:700;color:#1e3a5f">${fmtLs(d.amt)}</td>
+          <td style="color:#94a3b8">${pct}%</td>
+        </tr>`;
+        }).join('');
+
+      // ── MONTHLY TABLE ──
+      const monthRows = mIdxs.map((idx, pos) => ({ idx, amt: spendAt(idx, types), pos }));
+      const maxAmt = Math.max(...monthRows.map(r => r.amt), 1);
+      document.getElementById('monthlyTableBody').innerHTML = monthRows.length === 0
+        ? '<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:16px">No data</td></tr>'
+        : monthRows.map(({ idx, amt, pos }) => {
+          const prev = pos > 0 ? monthRows[pos - 1].amt : null;
+          const chg = prev ? ((amt - prev) / prev * 100).toFixed(1) : null;
+          const chgColor = !chg ? '#94a3b8' : parseFloat(chg) >= 0 ? '#10b981' : '#ef4444';
+          const arrow = !chg ? '' : parseFloat(chg) >= 0 ? '▲ ' : '▼ ';
+          const barW = (amt / maxAmt * 100).toFixed(0);
+          return `<tr>
+          <td style="font-weight:500">${MONTH_NAMES[idx]}</td>
+          <td style="font-weight:700;color:#1e3a5f">${fmtLs(amt)}</td>
+          <td style="color:${chgColor};font-weight:600">${arrow}${chg ? chg + '%' : '—'}</td>
+          <td style="min-width:70px">
+            <div style="background:#f1f5f9;border-radius:3px;height:6px">
+              <div style="width:${barW}%;height:6px;background:linear-gradient(90deg,#2563eb,#06b6d4);border-radius:3px"></div>
+            </div>
+          </td>
+        </tr>`;
+        }).join('');
+    }
+
+    function syncMonthTab() {
+      selMonth = document.getElementById('monthFilter').value;
+      document.querySelectorAll('.month-tab').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.month === selMonth);
+      });
+      applyFilter();
+    }
+
+    function resetFilters() {
+      document.getElementById('typeFilter').value = 'All';
+      document.getElementById('monthFilter').value = 'All';
+      document.querySelectorAll('.month-tab').forEach(btn => btn.classList.toggle('active', btn.dataset.month === 'All'));
+      selType = 'All'; selMonth = 'All';
+      applyFilter();
+    }
+
+    // Month tab click
+    document.getElementById('monthTabs').addEventListener('click', e => {
+      const tab = e.target.closest('.month-tab');
+      if (!tab) return;
+      selMonth = tab.dataset.month;
+      document.getElementById('monthFilter').value = selMonth;
+      document.querySelectorAll('.month-tab').forEach(b => b.classList.toggle('active', b === tab));
+      applyFilter();
+    });
+
+    // ==================== PAGE NAVIGATION ====================
+    const PAGE_TITLES = {
+      overview: 'Dashboard Overview',
+      spend: 'Spend Analysis',
+      channel: 'Channel Mix',
+      performance: 'Performance',
+      insights: 'Insights'
+    };
+    const PAGE_SUBTITLES = {
+      overview: 'Summary of all marketing spend · FY 2025–26',
+      spend: 'Final Marketing Sheet · FY 2025–26 · Apr 2025 – Mar 2026',
+      channel: 'Online vs Offline channel breakdown · FY 2025–26',
+      performance: 'Month-over-month performance tracking · FY 2025–26',
+      insights: 'Top sub-categories & investment analysis · FY 2025–26'
+    };
+
+    let currentPage = 'spend';
+    // secondary chart instances (lazy init)
+    let ovLine, ovDonut, ovCat,
+      chStacked, chDonut, chCat,
+      perfLine, perfBar,
+      insCat, insGrowth;
+
+    function switchPage(page) {
+      currentPage = page;
+      // show/hide sections
+      document.querySelectorAll('.page-section').forEach(s => s.style.display = 'none');
+      const el = document.getElementById('page-' + page);
+      if (el) el.style.display = '';
+
+      // spend-row3 only for spend page
+      const r3 = document.getElementById('spend-row3');
+      if (r3) r3.style.display = page === 'spend' ? '' : 'none';
+
+      // nav active state
+      document.querySelectorAll('.nav-item').forEach(n => {
+        n.classList.toggle('active', n.dataset.page === page);
+      });
+
+      // header
+      document.getElementById('pageTitle').textContent = PAGE_TITLES[page] || 'Dashboard';
+      document.getElementById('pageSubtitle').textContent = PAGE_SUBTITLES[page] || '';
+      document.getElementById('activePage').textContent = PAGE_TITLES[page] || '';
+
+      // render page-specific charts
+      renderPageCharts(page);
+    }
+
+    function renderPageCharts(page) {
+      const mIdxs = getMonthIndices();
+      const types = getTypes();
+      const labels = mIdxs.map(i => MONTHS[i]);
+      const barColors = ['#2563eb', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#3b82f6'];
+      const typeKeys = ['Offline Marketing', 'Online Marketing', 'Public Relation', 'TV/Radio'];
+      const typeColorsArr = ['#8b5cf6', '#06b6d4', '#f59e0b', '#ef4444'];
+      const onlineColors = ['#2563eb', '#06b6d4', '#10b981', '#f59e0b', '#8b5cf6'];
+      const stackColors = { 'Offline Marketing': '#8b5cf6', 'Online Marketing': '#06b6d4', 'Public Relation': '#f59e0b', 'TV/Radio': '#ef4444' };
+
+      function mkChart(id, cfg) {
+        const el = document.getElementById(id);
+        if (!el) return null;
+        const existing = Chart.getChart(el);
+        if (existing) existing.destroy();
+        return new Chart(el, cfg);
+      }
+
+      // ── OVERVIEW ──────────────────────────────────────────────────────────────
+      if (page === 'overview') {
+        const totals = mIdxs.map(i => spendAt(i, Object.keys(monthlyByType)));
+        const peakIdx = totals.indexOf(Math.max(...totals));
+        const totalAll = totals.reduce((a, b) => a + b, 0);
+        if (document.getElementById('ov-peak')) document.getElementById('ov-peak').textContent = MONTH_NAMES[mIdxs[peakIdx]] || '—';
+        if (document.getElementById('ov-total')) document.getElementById('ov-total').textContent = fmtLs(totalAll);
+
+        ovLine = mkChart('ovLineChart', {
+          type: 'line', data: {
+            labels,
+            datasets: typeKeys.map((tk, i) => ({
+              label: tk.replace(' Marketing', '').replace('Public Relation', 'PR'),
+              data: mIdxs.map(idx => monthlyByType[tk]?.[idx] ?? 0),
+              borderColor: typeColorsArr[i], backgroundColor: 'transparent',
+              borderWidth: 2, pointRadius: 3, tension: 0.4
+            }))
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+            plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 10, font: { size: 9 } } }, tooltip: { ...tooltipStyle } },
+            scales: {
+              x: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 9 } } },
+              y: { grid: gridStyle, border: { display: false }, ticks: { callback: v => fmtLs(v), font: { size: 9 } } }
+            }
+          }
+        });
+
+        const typeAmts2 = typeKeys.map(tk => mIdxs.reduce((s, i) => s + (monthlyByType[tk]?.[i] ?? 0), 0));
+        const donutT = typeAmts2.reduce((a, b) => a + b, 0) || 1;
+        ovDonut = mkChart('ovDonutChart', {
+          type: 'doughnut',
+          data: {
+            labels: typeKeys.map(t => t.replace(' Marketing', '')),
+            datasets: [{ data: typeAmts2, backgroundColor: typeColorsArr, borderWidth: 3, borderColor: '#fff', hoverOffset: 5 }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false, cutout: '68%',
+            plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => ' ' + ctx.label + ': ' + fmtLs(ctx.raw) } } }
+          }
+        });
+        const legOv = document.getElementById('ovDonutLegend');
+        if (legOv) legOv.innerHTML = typeKeys.map((tk, i) => `
+      <div class="donut-legend-item">
+        <div class="dleg" style="background:${typeColorsArr[i]}"></div>
+        <span>${tk.replace(' Marketing', '')}</span>
+        <span class="dleg-val">${fmtLs(typeAmts2[i])}</span>
+        <span class="dleg-pct">${(typeAmts2[i] / donutT * 100).toFixed(1)}%</span>
+      </div>`).join('');
+
+        const catAmts2 = catDataFull.map(c => mIdxs.reduce((s, i) => s + (c.monthAmts[i] ?? 0), 0));
+        const catPairs2 = catDataFull.map((c, i) => ({ cat: c.cat, amt: catAmts2[i] })).filter(x => x.amt > 0).sort((a, b) => b.amt - a.amt).slice(0, 6);
+        ovCat = mkChart('ovCatChart', {
+          type: 'bar', data: {
+            labels: catPairs2.map(d => d.cat.length > 16 ? d.cat.slice(0, 14) + '…' : d.cat),
+            datasets: [{ data: catPairs2.map(d => d.amt), backgroundColor: barColors.slice(0, catPairs2.length), borderRadius: 5, borderSkipped: false }]
+          },
+          options: {
+            indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => ' ' + fmtL(ctx.raw) } } },
+            scales: {
+              x: { grid: gridStyle, border: { display: false }, ticks: { callback: v => fmtLs(v), font: { size: 9 } } },
+              y: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 9 } } }
+            }
+          }
+        });
+
+        // monthly table
+        const monthRows2 = mIdxs.map((idx, pos) => ({ idx, amt: spendAt(idx, Object.keys(monthlyByType)), pos }));
+        const maxA2 = Math.max(...monthRows2.map(r => r.amt), 1);
+        const ovBody = document.getElementById('ovMonthlyBody');
+        if (ovBody) ovBody.innerHTML = monthRows2.map(({ idx, amt, pos }) => {
+          const prev = pos > 0 ? monthRows2[pos - 1].amt : null;
+          const chg = prev ? ((amt - prev) / prev * 100).toFixed(1) : null;
+          const cc = !chg ? '#94a3b8' : parseFloat(chg) >= 0 ? '#10b981' : '#ef4444';
+          const aw = !chg ? '' : parseFloat(chg) >= 0 ? '▲ ' : '▼ ';
+          const bw = (amt / maxA2 * 100).toFixed(0);
+          return `<tr>
+        <td style="font-weight:500">${MONTH_NAMES[idx]}</td>
+        <td style="font-weight:700;color:#1e3a5f">${fmtLs(amt)}</td>
+        <td style="color:${cc};font-weight:600">${aw}${chg ? chg + '%' : '—'}</td>
+        <td><div style="background:#f1f5f9;border-radius:3px;height:6px">
+          <div style="width:${bw}%;height:6px;background:linear-gradient(90deg,#2563eb,#06b6d4);border-radius:3px"></div></div></td>
+      </tr>`;
+        }).join('');
+      }
+
+      // ── CHANNEL MIX ──────────────────────────────────────────────────────────
+      if (page === 'channel') {
+        const stackTypes2 = selType === 'All' ? typeKeys : [selType];
+        chStacked = mkChart('chStackedBar', {
+          type: 'bar', data: {
+            labels,
+            datasets: stackTypes2.map(tk => ({
+              label: tk.replace(' Marketing', '').replace('Public Relation', 'PR'),
+              data: mIdxs.map(i => monthlyByType[tk]?.[i] ?? 0),
+              backgroundColor: stackColors[tk], borderRadius: 3, stack: 's'
+            }))
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 10, font: { size: 9 } } }, tooltip: { ...tooltipStyle } },
+            scales: {
+              x: { grid: { display: false }, stacked: true, border: { display: false }, ticks: { font: { size: 9 } } },
+              y: { grid: gridStyle, stacked: true, border: { display: false }, ticks: { callback: v => fmtLs(v), font: { size: 9 } } }
+            }
+          }
+        });
+
+        const onAmts = Object.entries(onlineByChannel).map(([k, v]) => ({ k, amt: mIdxs.reduce((s, i) => s + (v[i] ?? 0), 0) }));
+        const onTotal = onAmts.reduce((s, x) => s + x.amt, 0) || 1;
+        chDonut = mkChart('chDonut', {
+          type: 'doughnut',
+          data: { labels: onAmts.map(x => x.k), datasets: [{ data: onAmts.map(x => x.amt), backgroundColor: onlineColors, borderWidth: 3, borderColor: '#fff', hoverOffset: 5 }] },
+          options: {
+            responsive: true, maintainAspectRatio: false, cutout: '65%',
+            plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => ' ' + ctx.label + ': ' + fmtLs(ctx.raw) } } }
+          }
+        });
+        const chLeg = document.getElementById('chDonutLegend');
+        if (chLeg) chLeg.innerHTML = onAmts.map((x, i) => `
+      <div class="donut-legend-item">
+        <div class="dleg" style="background:${onlineColors[i]}"></div>
+        <span style="font-size:10px">${x.k.replace(' Marketing', '')}</span>
+        <span class="dleg-val">${fmtLs(x.amt)}</span>
+        <span class="dleg-pct">${(x.amt / onTotal * 100).toFixed(1)}%</span>
+      </div>`).join('');
+
+        chCat = mkChart('chCatBar', {
+          type: 'bar',
+          data: { labels: onAmts.map(x => x.k), datasets: [{ data: onAmts.map(x => x.amt), backgroundColor: onlineColors, borderRadius: 6, borderSkipped: false, barThickness: 22 }] },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => ' ' + fmtL(ctx.raw) } } },
+            scales: {
+              x: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 9 } } },
+              y: { grid: gridStyle, border: { display: false }, ticks: { callback: v => fmtLs(v), font: { size: 9 } } }
+            }
+          }
+        });
+
+        // Online trend chart (lazily init here)
+        onlineChart = mkChart('onlineChart', {
+          type: 'line',
+          data: {
+            labels,
+            datasets: Object.entries(onlineByChannel).map(([k, v], i) => ({
+              label: k, data: mIdxs.map(idx => v[idx] ?? 0),
+              borderColor: onlineColors[i], backgroundColor: 'transparent',
+              borderWidth: 2, pointRadius: 3, pointHoverRadius: 5,
+              pointBackgroundColor: onlineColors[i], tension: 0.4
+            }))
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + fmtLs(ctx.raw) } } },
+            scales: {
+              x: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 10 } } },
+              y: { grid: gridStyle, border: { display: false }, ticks: { callback: v => fmtLs(v), font: { size: 9 } } }
+            }
+          }
+        });
+      }
+
+      // ── PERFORMANCE ───────────────────────────────────────────────────────────
+      if (page === 'performance') {
+        const allTotals = mIdxs.map(i => spendAt(i, Object.keys(monthlyByType)));
+        const offArr = mIdxs.map(i => monthlyByType['Offline Marketing']?.[i] ?? 0);
+        const onArr = mIdxs.map(i => monthlyByType['Online Marketing']?.[i] ?? 0);
+        const peakI = allTotals.indexOf(Math.max(...allTotals));
+        const avgAll = allTotals.reduce((a, b) => a + b, 0) / (allTotals.length || 1);
+        if (document.getElementById('perf-peak')) document.getElementById('perf-peak').textContent = MONTH_NAMES[mIdxs[peakI]] || '—';
+        if (document.getElementById('perf-avg')) document.getElementById('perf-avg').textContent = fmtLs(avgAll);
+
+        perfLine = mkChart('perfLineChart', {
+          type: 'line', data: {
+            labels,
+            datasets: [
+              { label: 'Total', data: allTotals, borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.08)', borderWidth: 2.5, fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: '#2563eb', pointBorderColor: 'white', pointBorderWidth: 2 },
+              { label: 'Offline', data: offArr, borderColor: '#8b5cf6', borderDash: [5, 4], borderWidth: 1.5, fill: false, tension: 0.4, pointRadius: 2 },
+              { label: 'Online', data: onArr, borderColor: '#06b6d4', borderDash: [5, 4], borderWidth: 1.5, fill: false, tension: 0.4, pointRadius: 2 }
+            ]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+            plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 10, font: { size: 9 } } }, tooltip: { ...tooltipStyle } },
+            scales: {
+              x: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 9 } } },
+              y: { grid: gridStyle, border: { display: false }, ticks: { callback: v => fmtLs(v), font: { size: 9 } } }
+            }
+          }
+        });
+
+        perfBar = mkChart('perfBarChart', {
+          type: 'bar', data: {
+            labels,
+            datasets: [{ data: allTotals, backgroundColor: allTotals.map((v, i) => i === peakI ? '#2563eb' : '#bfdbfe'), borderRadius: 5, borderSkipped: false, barThickness: 20 }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => ' Total: ' + fmtLs(ctx.raw) } } },
+            scales: {
+              x: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 9 } } },
+              y: { grid: gridStyle, border: { display: false }, ticks: { callback: v => fmtLs(v), font: { size: 9 } } }
+            }
+          }
+        });
+
+        const perfRows = mIdxs.map((idx, pos) => {
+          const offAmt = monthlyByType['Offline Marketing']?.[idx] ?? 0;
+          const onAmt = monthlyByType['Online Marketing']?.[idx] ?? 0;
+          const total = spendAt(idx, Object.keys(monthlyByType));
+          const prev = pos > 0 ? spendAt(mIdxs[pos - 1], Object.keys(monthlyByType)) : null;
+          const chg = prev ? ((total - prev) / prev * 100).toFixed(1) : null;
+          const cc = !chg ? '#94a3b8' : parseFloat(chg) >= 0 ? '#10b981' : '#ef4444';
+          const aw = !chg ? '' : parseFloat(chg) >= 0 ? '▲ ' : '▼ ';
+          const bw = (total / Math.max(...allTotals, 1) * 100).toFixed(0);
+          return `<tr>
+        <td style="font-weight:600">${MONTH_NAMES[idx]}</td>
+        <td style="font-weight:700;color:#1e3a5f">${fmtLs(total)}</td>
+        <td style="color:#8b5cf6">${fmtLs(offAmt)}</td>
+        <td style="color:#06b6d4">${fmtLs(onAmt)}</td>
+        <td style="color:${cc};font-weight:600">${aw}${chg ? chg + '%' : '—'}</td>
+        <td><div style="background:#f1f5f9;border-radius:3px;height:6px">
+          <div style="width:${bw}%;height:6px;background:linear-gradient(90deg,#2563eb,#06b6d4);border-radius:3px"></div></div></td>
+      </tr>`;
+        });
+        const perfBody = document.getElementById('perfTableBody');
+        if (perfBody) perfBody.innerHTML = perfRows.join('');
+      }
+
+      // ── INSIGHTS ──────────────────────────────────────────────────────────────
+      if (page === 'insights') {
+        const catAmts3 = catDataFull.map(c => (selType === 'All' || selType === c.type) ? mIdxs.reduce((s, i) => s + (c.monthAmts[i] ?? 0), 0) : 0);
+        const catPairs3 = catDataFull.map((c, i) => ({ cat: c.cat, amt: catAmts3[i] })).filter(x => x.amt > 0).sort((a, b) => b.amt - a.amt).slice(0, 8);
+
+        // Radar replacement: horizontal bar of spend by type
+        const insRadarAmts = typeKeys.map(tk => (selType === 'All' || selType === tk) ? mIdxs.reduce((s, i) => s + (monthlyByType[tk]?.[i] ?? 0), 0) : 0);
+        mkChart('insRadar', {
+          type: 'bar',
+          data: {
+            labels: typeKeys.map(t => t.replace(' Marketing', '').replace('Public Relation', 'PR')),
+            datasets: [{ data: insRadarAmts, backgroundColor: typeColorsArr, borderRadius: 8, borderSkipped: false }]
+          },
+          options: {
+            indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => ' ' + fmtL(ctx.raw) } } },
+            scales: {
+              x: { grid: gridStyle, border: { display: false }, ticks: { callback: v => fmtLs(v), font: { size: 9 } } },
+              y: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 10 } } }
+            }
+          }
+        });
+
+        insCat = mkChart('insCatChart', {
+          type: 'bar', data: {
+            labels: catPairs3.map(d => d.cat.length > 18 ? d.cat.slice(0, 16) + '…' : d.cat),
+            datasets: [{ data: catPairs3.map(d => d.amt), backgroundColor: barColors.slice(0, catPairs3.length), borderRadius: 5, borderSkipped: false }]
+          },
+          options: {
+            indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => ' ' + fmtL(ctx.raw) } } },
+            scales: {
+              x: { grid: gridStyle, border: { display: false }, ticks: { callback: v => fmtLs(v), font: { size: 9 } } },
+              y: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 9 } } }
+            }
+          }
+        });
+
+        const growthData = typeKeys.map(tk => {
+          const vals = mIdxs.map(i => monthlyByType[tk]?.[i] ?? 0);
+          const growth = [];
+          for (let i = 1; i < vals.length; i++) growth.push(vals[i - 1] > 0 ? ((vals[i] - vals[i - 1]) / vals[i - 1] * 100) : 0);
+          return { tk, growth };
+        });
+        insGrowth = mkChart('insGrowthChart', {
+          type: 'line', data: {
+            labels: labels.slice(1),
+            datasets: growthData.map((d, i) => ({
+              label: d.tk.replace(' Marketing', '').replace('Public Relation', 'PR'),
+              data: d.growth,
+              borderColor: typeColorsArr[i], backgroundColor: 'transparent',
+              borderWidth: 2, pointRadius: 3, tension: 0.4
+            })).filter((_, i) => mIdxs.map(idx => monthlyByType[typeKeys[i]]?.[idx] ?? 0).some(v => v > 0))
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: { position: 'bottom', labels: { boxWidth: 10, padding: 10, font: { size: 9 } } },
+              tooltip: { ...tooltipStyle, callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + (ctx.raw >= 0 ? '+' : '') + ctx.raw.toFixed(1) + '%' } }
+            },
+            scales: {
+              x: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 9 } } },
+              y: { grid: gridStyle, border: { display: false }, ticks: { callback: v => (v >= 0 ? '+' : '') + v.toFixed(0) + '%', font: { size: 9 } } }
+            }
+          }
+        });
+
+        // Full sub-cat table
+        const totalSpend = mIdxs.reduce((s, i) => s + spendAt(i, types), 0);
+        const subs = subCatRaw.map(row => {
+          if (selType !== 'All' && selType !== row.type) return { ...row, amt: 0 };
+          return { ...row, amt: mIdxs.reduce((s, mi) => s + getSubAmt(row, mi), 0) };
+        }).filter(x => x.amt > 0).sort((a, b) => b.amt - a.amt);
+        const subMax2 = subs[0]?.amt || 1;
+        const insBody = document.getElementById('insSubCatBody');
+        if (insBody) insBody.innerHTML = subs.map((d, i) => {
+          const pct = (d.amt / (totalSpend || 1) * 100).toFixed(1);
+          const bw = (d.amt / subMax2 * 100).toFixed(0);
+          const tc = { 'Offline Marketing': '#8b5cf6', 'Online Marketing': '#06b6d4', 'Public Relation': '#f59e0b', 'TV/Radio': '#ef4444' }[d.type] || '#2563eb';
+          const cls = { 'Offline Marketing': 'tag-offline', 'Online Marketing': 'tag-online', 'Public Relation': 'tag-pr', 'TV/Radio': 'tag-tv' }[d.type] || 'tag-offline';
+          return `<tr>
+        <td style="color:#94a3b8;font-weight:600">${i + 1}</td>
+        <td><div style="font-weight:600">${d.sub}</div>
+          <div class="mini-bar-wrap"><div class="mini-bar-fill" style="width:${bw}%;background:${tc}"></div></div></td>
+        <td><span class="type-tag ${cls}">${d.type.replace(' Marketing', '').replace('Public Relation', 'PR')}</span></td>
+        <td style="font-weight:700;color:#1e3a5f">${fmtLs(d.amt)}</td>
+        <td style="color:#94a3b8">${pct}%</td>
+      </tr>`;
+        }).join('');
+      }
+    }
+
+    // ==================== EXPORT ====================
+    function openExport() {
+      const info = `FY 2025-26 · ${selMonth === 'All' ? 'All 11 months' : MONTH_NAMES[MONTH_KEYS.indexOf(selMonth)]} · ${selType === 'All' ? 'All Types' : selType}`;
+      const el = document.getElementById('exportInfo');
+      if (el) el.textContent = info;
+      document.getElementById('exportModal').style.display = 'flex';
+    }
+    function closeExport() { document.getElementById('exportModal').style.display = 'none'; }
+
+    function exportCSV() {
+      const mIdxs = getMonthIndices();
+      const types = getTypes();
+      const rows = [['Month', 'Total Spend', 'Offline Marketing', 'Online Marketing', 'Public Relation', 'TV/Radio']];
+      mIdxs.forEach(i => {
+        rows.push([
+          MONTH_NAMES[i],
+          spendAt(i, Object.keys(monthlyByType)),
+          monthlyByType['Offline Marketing']?.[i] ?? 0,
+          monthlyByType['Online Marketing']?.[i] ?? 0,
+          monthlyByType['Public Relation']?.[i] ?? 0,
+          monthlyByType['TV/Radio']?.[i] ?? 0
+        ]);
+      });
+      const csv = rows.map(r => r.join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `marketing_spend_${selMonth === 'All' ? 'FY2025-26' : selMonth}.csv`;
+      a.click();
+      closeExport();
+    }
+
+    function exportJSON() {
+      const mIdxs = getMonthIndices();
+      const data = mIdxs.map(i => ({
+        month: MONTH_NAMES[i],
+        total: spendAt(i, Object.keys(monthlyByType)),
+        offline: monthlyByType['Offline Marketing']?.[i] ?? 0,
+        online: monthlyByType['Online Marketing']?.[i] ?? 0,
+        pr: monthlyByType['Public Relation']?.[i] ?? 0,
+        tv: monthlyByType['TV/Radio']?.[i] ?? 0
+      }));
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `marketing_spend_${selMonth === 'All' ? 'FY2025-26' : selMonth}.json`;
+      a.click();
+      closeExport();
+    }
+
+    // ==================== BOOT ====================
+    initCharts();
+    applyFilter();
+
+    // Attach nav click handlers
+    document.getElementById('navMenu').addEventListener('click', e => {
+      const item = e.target.closest('.nav-item');
+      if (!item) return;
+      e.preventDefault();
+      switchPage(item.dataset.page);
+      // re-run filters so charts update on the new page
+      applyFilter();
+    });
+
+    // Export button
+    document.getElementById('exportBtn').addEventListener('click', openExport);
+
+    // Close modal on overlay click
+    document.getElementById('exportModal').addEventListener('click', e => {
+      if (e.target === e.currentTarget) closeExport();
+    });
+
+    // Start on spend page
+    switchPage('spend');
+    applyFilter();
+
+  </script>
+</body>
+
+</html>
